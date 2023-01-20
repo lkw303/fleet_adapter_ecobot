@@ -441,7 +441,7 @@ class EcobotCommandHandle(adpt.RobotCommandHandle):
                         adpt.robot_update_handle.ActionExecution):
         with self._lock:
             # only accept clean and manual_control
-            assert(category in ["clean", "manual_control"])
+            assert(category in ["clean", "manual_control", "hello"])
 
             self.action_category = category
             if (category == "clean"):
@@ -465,6 +465,14 @@ class EcobotCommandHandle(adpt.RobotCommandHandle):
                     time.sleep(1.0)
             elif (category == "manual_control"):
                 self.check_task_completion = lambda:False  # user can only cancel the manual_control
+
+            elif (category == "hello"):
+                self.check_task_completion = lambda:False
+                self.node.get_logger().info(
+                    f"Robot {self.name} is saying HELLO!"
+                )
+                time.sleep(2.0)
+                self.check_task_completion = lambda:True
 
             # start Perform Action
             self.node.get_logger().warn(f"Robot [{self.name}] starts [{category}] action")
